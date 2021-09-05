@@ -6,7 +6,7 @@ try:
     browser = webdriver.Chrome()
     browser.get(link)
 
-    # Ваш код, который заполняет обязательные поля
+    # Ваш код, который заполняет обязательные поля 
     input = browser.find_element_by_tag_name('div.first_block > div.form-group.first_class > input') 
     input.send_keys("Ivan")
     input = browser.find_element_by_tag_name('div.first_block > div.form-group.second_class > input')

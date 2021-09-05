@@ -12,7 +12,7 @@ try:
     browser = webdriver.Chrome()
     browser.get(link)
 
-    # жму кнопку
+    # жму кнопку 
     browser.find_element_by_css_selector(".trollface.btn.btn-primary").click()
 
     # узнаю о новой вкладке

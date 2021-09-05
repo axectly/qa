@@ -2,7 +2,7 @@ from selenium import webdriver
 import time
 import os
 
-#указываем какой и откуда брать файл
+#указываем какой и откуда брать файл 
 current_dir = os.path.abspath(os.path.dirname(__file__))
 file_name = "test.txt"
 file_path = os.path.join(current_dir, file_name)

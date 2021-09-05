@@ -4,7 +4,7 @@ import time
 
 # считаю сумму а + б
 def sum(a, b):
-    return str(a + b)  # сразу перевожу значение в строку
+    return str(a + b)  # сразу перевожу значение в строку 
 
 
 try:
