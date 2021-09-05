@@ -1,2 +1,2 @@
-# qa
-autotests
+# QA
+Autotests
