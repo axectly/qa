@@ -1,28 +1,34 @@
 import pytesseract
 import requests
-from PIL.Image import Image
+import time
+from PIL import Image
 from selenium import webdriver
 
 
 link_auth = "https://pgbonus.ru/auth"
 browser = webdriver.Chrome()
 browser.get(link_auth)
-
+time.sleep(2)
 # Get link to captcha on the auth page
-link_to_captcha = browser.find_element_by_css_selector(
-    '#loginform-captcha-image')
+link_to_captcha = browser.find_element_by_css_selector('#loginform-captcha-image')
 captcha_url = link_to_captcha.get_attribute('src')
 
 print(captcha_url)
 
+browser.quit
+
 
 def download_captcha_image():
-    response = requests.get(captcha_full_link)
+    response = requests.get(captcha_url)
     img_bytes = response.content
 
     fname = 'captcha.png'
-    with open(fname, 'wb') as f:
-        f.write(img_bytes)
+    with open(fname, "wb") as file:
+        file.write(img_bytes)
+    print('Downloaded')
     
     img = Image.open(fname)
     return img
+
+img = download_captcha_image()
+print(pytesseract.image_to_string(img, config='digits'))
