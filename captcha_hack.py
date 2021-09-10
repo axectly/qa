@@ -8,14 +8,13 @@ from selenium import webdriver
 link_auth = "https://pgbonus.ru/auth"
 browser = webdriver.Chrome()
 browser.get(link_auth)
-time.sleep(2)
 # Get link to captcha on the auth page
+link_to_captcha = browser.find_element_by_css_selector('#loginform-captcha-image').click()
+time.sleep(1)
 link_to_captcha = browser.find_element_by_css_selector('#loginform-captcha-image')
 captcha_url = link_to_captcha.get_attribute('src')
 
 print(captcha_url)
-
-browser.quit
 
 
 def download_captcha_image():
