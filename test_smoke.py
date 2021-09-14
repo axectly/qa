@@ -1,5 +1,5 @@
-import pytesseract
 import time
+import pytesseract
 from selenium import webdriver
 from auth_data import login_email, password, link_main_page
 
