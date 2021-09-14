@@ -15,4 +15,5 @@ print('Made screen')
 
 img = 'captcha_screen.png'
 
-print(pytesseract.image_to_string(img, config='digits'))
+captcha_value = pytesseract.image_to_string(img, lang='eng')
+print('Captcha value is:', captcha_value)
