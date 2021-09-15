@@ -1,6 +1,7 @@
-from os import name
 import time
 import pytesseract
+from random import choice
+from string import digits
 from selenium import webdriver
 from auth_data import login_email, password, link_main_page
 
@@ -15,11 +16,11 @@ try:
         print(f'======================={name}_start=======================')
         
 
-    def decoration_finish(name):
+    def decoration_finish():
         """ Function that decorates the ending of the test
         
         """
-        print(f'========================{name}_end========================')
+        print(f'==============================================================')
 
 
     def phone_generator():
@@ -59,8 +60,9 @@ try:
         print('[+]Made screen of captcha')
         img = 'captcha_screen.png'
         captcha_value = pytesseract.image_to_string(img, lang='eng', config='tessedit_char_whitelist=0123456789')
+        print('Captcha value is:', captcha_value)
 
-        # while len(captcha_value) < 5:
+        # if (len(captcha_value) < 5):
         #     # Find captcha block
         #     find_captcha = browser.find_element_by_css_selector('#loginform-captcha-image').click()
         #     time.sleep(1)
@@ -75,9 +77,8 @@ try:
 
         #     captcha_value = pytesseract.image_to_string(img, lang='eng', config='tessedit_char_whitelist=0123456789')
         # else:
-
         # Print value of captcha
-        print('[+]New captcha value is', captcha_value)
+        # print('[+]New captcha value is', captcha_value)
 
         # Clear and input captcha
         captcha_input = browser.find_element_by_css_selector('#loginform-captcha')
@@ -95,7 +96,7 @@ try:
             print(f'[+] Авторизация выполнена')
         else:
             print(f'Что-то пошло не так')
-        decoration_finish(test_login.__name__)
+        decoration_finish()
 
 
     def test_logout():
@@ -103,7 +104,7 @@ try:
         # Go to main page
         browser.get(link_main_page)
         # Find LK button
-        browser.find_element_by_css_selector('.newheader__topline-links [href="/lk"]').click()
+        browser.find_element_by_xpath('//header/div[1]/div/a[2]').click()
         browser.find_element_by_css_selector('.button.mini.secondary').click()
         login_button = browser.find_element_by_css_selector('.newheader__topline-links [href="/auth"]').text
         index = login_button.find('Вход')
@@ -111,8 +112,7 @@ try:
             print(f'[+] Логаут выполнен')
         else:
             print(f'Что-то пошло не так')
-        decoration_finish(test_logout.__name__)
-
+        decoration_finish()
 
     def test_registartion():
         decoration_start(test_logout.__name__)
@@ -129,10 +129,10 @@ try:
         # Input email
         email_input = browser.find_element_by_css_selector('input#registrationform-email')
         email_input.clear()
-        email_input.send_keys('testicnx011@rambler.ru')
+        email_input.send_keys('wkdgjnsd@mail.ru')
 
         # Input random phone
-        phone_input = browser.find_element_by_css_selector('input#registrationform-email')
+        phone_input = browser.find_element_by_css_selector('input#registrationform-phone')
         phone_input.clear()
         phone_input.send_keys(phone_generator())
 
@@ -147,10 +147,17 @@ try:
         browser.find_element_by_css_selector('input#registrationform-aggr').click()
 
         # Click "Зарегистрироваться"
+        browser.find_element_by_css_selector('button.submit.field.button').click()
         
+        time.sleep(1)
+        success_registration = browser.find_element_by_css_selector('.blue.center').text
+        index = success_registration.find('входа')
+        if index != -1:
+            print(f'[+] Регистрация выполнена')
+        else:
+            print(f'Что-то пошло не так')
 
-
-        decoration_finish(test_logout.__name__)
+        decoration_finish()
 
 
     def navigation():
@@ -162,7 +169,8 @@ try:
 
     test_login()
     test_logout()
-    len()
+    time.sleep(1)
+    test_registartion()
 
 finally:
     # успеваем скопировать код за 30 секунд
