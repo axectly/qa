@@ -31,10 +31,10 @@ try:
         return(str(9) + str(phone_gen))
 
 
-    def test_login():
+    def test_login(browser):
         decoration_start(test_login.__name__)
-        # Go to link
-        browser.get(link_main_page)
+        browser.get(link_main_page, verify=False)
+        
 
         # Click login button
         browser.find_element_by_css_selector('.newheader__topline-links [href="/auth"]').click()
@@ -99,10 +99,10 @@ try:
         decoration_finish()
 
 
-    def test_logout():
+    def test_logout(browser):
         decoration_start(test_logout.__name__)
         # Go to main page
-        browser.get(link_main_page)
+        browser.get(link_main_page, verify=False)
         # Find LK button
         browser.find_element_by_xpath('//header/div[1]/div/a[2]').click()
         browser.find_element_by_css_selector('.button.mini.secondary').click()
@@ -114,7 +114,7 @@ try:
             print(f'Что-то пошло не так')
         decoration_finish()
 
-    def test_registartion():
+    def test_registartion(browser):
         decoration_start(test_logout.__name__)
         
         # Go to main page
@@ -129,7 +129,7 @@ try:
         # Input email
         email_input = browser.find_element_by_css_selector('input#registrationform-email')
         email_input.clear()
-        email_input.send_keys('wkdgjnsd@mail.ru')
+        email_input.send_keys('wkdgjns39@mail.ru')
 
         # Input random phone
         phone_input = browser.find_element_by_css_selector('input#registrationform-phone')
@@ -167,10 +167,10 @@ try:
     def blabla():
         pass
 
-    test_login()
-    test_logout()
-    time.sleep(1)
-    test_registartion()
+    # test_login()
+    # test_logout()
+    # time.sleep(1)
+    # test_registartion()
 
 finally:
     # успеваем скопировать код за 30 секунд
