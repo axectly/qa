@@ -10,3 +10,6 @@ class LoginPageLocators():
     REG_EMAIL_INPUT = (By.CSS_SELECTOR, "#id_registration-email")
     REG_PASSWORD1_INPUT = (By.CSS_SELECTOR, "#id_registration-password1")
     REG_PASSWORD2_INPUT = (By.CSS_SELECTOR, "#id_registration-password2")
+
+class ProductLocators():
+    ADD_PRODUCT_TO_BASKET = (By.CSS_SELECTOR, '.btn.btn-lg.btn-primary.btn-add-to-basket')
