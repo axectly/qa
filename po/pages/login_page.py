@@ -5,14 +5,9 @@ from selenium.webdriver.common.by import By
 
 class LoginPage(BasePage):
     def should_be_login_page(self):
-        self.go_to_login_page()
         self.should_be_login_url()
         self.should_be_login_form()
         self.should_be_register_form()
-
-    def go_to_login_page(self):
-        login_link = self.browser.find_element(By.CSS_SELECTOR, "#login_link")
-        login_link.click()
 
     def should_be_login_url(self):
         assert "login" in self.browser.current_url, 'There is no "login" in url'       
