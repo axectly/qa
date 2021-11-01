@@ -5,175 +5,179 @@ from string import digits
 from selenium import webdriver
 from auth_data import login_email, password, link_main_page
 
-try:
-    browser = webdriver.Chrome()
+
+browser = webdriver.Chrome()
 
 
-    def decoration_start(name):
-        """ Function that decorates the beginning of the test
-        
+def decoration_start(name):
+    """ Function that decorates the beginning of the test
+    
+    """
+    print(f'======================={name}_start=======================')
+    
+
+def decoration_finish():
+    """ Function that decorates the ending of the test
+    
+    """
+    print(f'==============================================================')
+
+
+def phone_generator():
+    """ Return a random phone number
+        Generates 9 + 9 random digits
         """
-        print(f'======================={name}_start=======================')
-        
-
-    def decoration_finish():
-        """ Function that decorates the ending of the test
-        
-        """
-        print(f'==============================================================')
+    phone_gen = ''.join(choice(digits) for i in range(9))
+    return(str(9) + str(phone_gen))
 
 
-    def phone_generator():
-        """ Return a random phone number
-            Generates 9 + 9 random digits
-         """
-        phone_gen = ''.join(choice(digits) for i in range(9))
-        return(str(9) + str(phone_gen))
+def test_login():
+    decoration_start(test_login.__name__)
+    browser.get(link_main_page)
+    
 
+    # Click login button
+    browser.find_element_by_css_selector('.newheader__topline-links [href="/auth"]').click()
 
-    def test_login(browser):
-        decoration_start(test_login.__name__)
-        browser.get(link_main_page, verify=False)
-        
+    # Clear and input email
+    email_input = browser.find_element_by_css_selector('#loginform-email')
+    email_input.clear()
+    email_input.send_keys(login_email)
 
-        # Click login button
-        browser.find_element_by_css_selector('.newheader__topline-links [href="/auth"]').click()
+    # Clear and input password
+    password_input = browser.find_element_by_css_selector('#password')
+    password_input.clear()
+    password_input.send_keys(password)
 
-        # Clear and input email
-        email_input = browser.find_element_by_css_selector('#loginform-email')
-        email_input.clear()
-        email_input.send_keys(login_email)
+    # Find captcha block
+    find_captcha = browser.find_element_by_css_selector('#loginform-captcha-image')
+    # Make screen of captcha
+    captcha_image = find_captcha.screenshot_as_png
 
-        # Clear and input password
-        password_input = browser.find_element_by_css_selector('#password')
-        password_input.clear()
-        password_input.send_keys(password)
+    # Save screen to file
+    with open('captcha_screen.png', "wb") as file:
+            file.write(captcha_image)
+    print('[+]Made screen of captcha')
+    img = 'captcha_screen.png'
+    captcha_value = pytesseract.image_to_string(img, lang='eng', config='-c tessedit_char_whitelist=0123456789')
+    print('[+] Captcha value is:', captcha_value)
 
+    # удаляем 2 посл. символа т.к. tesseract в конец строки добавляет 2 служебных символа
+    captcha_value = captcha_value[:-2]
+    print(len(captcha_value))
+    while (len(captcha_value) < 5):
+        print('\nCaptcha length < 5 symbols, refreshing...')
         # Find captcha block
-        find_captcha = browser.find_element_by_css_selector('#loginform-captcha-image')
+        find_captcha.click()
+        time.sleep(1)
         # Make screen of captcha
         captcha_image = find_captcha.screenshot_as_png
 
         # Save screen to file
         with open('captcha_screen.png', "wb") as file:
                 file.write(captcha_image)
-        print('[+]Made screen of captcha')
-        img = 'captcha_screen.png'
-        captcha_value = pytesseract.image_to_string(img, lang='eng', config='tessedit_char_whitelist=0123456789')
-        print('Captcha value is:', captcha_value)
+        print('[+]Made screen of captcha again')
+        img2 = 'captcha_screen.png'
 
-        # if (len(captcha_value) < 5):
-        #     # Find captcha block
-        #     find_captcha = browser.find_element_by_css_selector('#loginform-captcha-image').click()
-        #     time.sleep(1)
-        #     # Make screen of captcha
-        #     captcha_image = find_captcha.screenshot_as_png
-
-        #     # Save screen to file
-        #     with open('captcha_screen.png', "wb") as file:
-        #             file.write(captcha_image)
-        #     print('[+]Made screen of captcha again')
-        #     img = 'captcha_screen.png'
-
-        #     captcha_value = pytesseract.image_to_string(img, lang='eng', config='tessedit_char_whitelist=0123456789')
-        # else:
-        # Print value of captcha
-        # print('[+]New captcha value is', captcha_value)
-
-        # Clear and input captcha
-        captcha_input = browser.find_element_by_css_selector('#loginform-captcha')
-        captcha_input.clear()
-        captcha_input.send_keys(captcha_value)
-
-        # Click auth button
-        browser.find_element_by_css_selector('.btn.btn-primary').click()
-
-        # Find message about success auth
-        time.sleep(1)
-        success_auth = browser.find_element_by_css_selector('.blue.center').text
-        index = success_auth.find('входа')
-        if index != -1:
-            print(f'[+] Авторизация выполнена')
-        else:
-            print(f'Что-то пошло не так')
-        decoration_finish()
-
-
-    def test_logout(browser):
-        decoration_start(test_logout.__name__)
-        # Go to main page
-        browser.get(link_main_page, verify=False)
-        # Find LK button
-        browser.find_element_by_xpath('//header/div[1]/div/a[2]').click()
-        browser.find_element_by_css_selector('.button.mini.secondary').click()
-        login_button = browser.find_element_by_css_selector('.newheader__topline-links [href="/auth"]').text
-        index = login_button.find('Вход')
-        if index != -1:
-            print(f'[+] Логаут выполнен')
-        else:
-            print(f'Что-то пошло не так')
-        decoration_finish()
-
-    def test_registartion(browser):
-        decoration_start(test_logout.__name__)
-        
-        # Go to main page
-        browser.get(link_main_page)
-        browser.find_element_by_css_selector('.newheader__topline-links [href="/register"]').click()
-
-        # Input name
-        name_input = browser.find_element_by_css_selector('input#registrationform-first_name')
-        name_input.clear()
-        name_input.send_keys('test')
-
-        # Input email
-        email_input = browser.find_element_by_css_selector('input#registrationform-email')
-        email_input.clear()
-        email_input.send_keys('wkdgjns39@mail.ru')
-
-        # Input random phone
-        phone_input = browser.find_element_by_css_selector('input#registrationform-phone')
-        phone_input.clear()
-        phone_input.send_keys(phone_generator())
-
-        # Input password
-        password_input = browser.find_element_by_css_selector('input#password')
-        password_input.clear()
-        password_input.send_keys(password)
-
-        # ===добавить проверку на попытку реги без галочки===
+        captcha_value = pytesseract.image_to_string(img2, lang='eng', config='-c tessedit_char_whitelist=0123456789')
     
-        # Check agreement
-        browser.find_element_by_css_selector('input#registrationform-aggr').click()
+    # Print value of captcha
+    print('[+] New captcha value is', captcha_value)
 
-        # Click "Зарегистрироваться"
-        browser.find_element_by_css_selector('button.submit.field.button').click()
-        
-        time.sleep(1)
-        success_registration = browser.find_element_by_css_selector('.blue.center').text
-        index = success_registration.find('входа')
-        if index != -1:
-            print(f'[+] Регистрация выполнена')
-        else:
-            print(f'Что-то пошло не так')
+    # Clear and input captcha
+    captcha_input = browser.find_element_by_css_selector('#loginform-captcha')
+    captcha_input.clear()
+    captcha_input.send_keys(captcha_value)
 
-        decoration_finish()
+    # Click auth button
+    browser.find_element_by_css_selector('.btn.btn-primary').click()
+
+    # Find message about success auth
+    time.sleep(1)
+    success_auth = browser.find_element_by_css_selector('.blue.center').text
+    index = success_auth.find('входа')
+    if index != -1:
+        print(f'[+] Авторизация выполнена')
+    else:
+        print(f'Что-то пошло не так')
+    decoration_finish()
 
 
-    def navigation():
-        pass
+def test_logout():
+    decoration_start(test_logout.__name__)
+    # Go to main page
+    browser.get(link_main_page)
+    # Find LK button
+    browser.find_element_by_xpath('//header/div[1]/div/a[2]').click()
+    browser.find_element_by_css_selector('.button.mini.secondary').click()
+    login_button = browser.find_element_by_css_selector('.newheader__topline-links [href="/auth"]').text
+    index = login_button.find('Вход')
+    if index != -1:
+        print(f'[+] Логаут выполнен')
+    else:
+        print(f'Что-то пошло не так')
+    decoration_finish()
+
+def test_registartion():
+    decoration_start(test_logout.__name__)
+    
+    # Go to main page
+    browser.get(link_main_page)
+    browser.find_element_by_css_selector('.newheader__topline-links [href="/register"]').click()
+
+    # Input name
+    name_input = browser.find_element_by_css_selector('input#registrationform-first_name')
+    name_input.clear()
+    name_input.send_keys('test')
+
+    # Input email
+    email_input = browser.find_element_by_css_selector('input#registrationform-email')
+    email_input.clear()
+    email_input.send_keys('wkdgjns39@mail.ru')
+
+    # Input random phone
+    phone_input = browser.find_element_by_css_selector('input#registrationform-phone')
+    phone_input.clear()
+    phone_input.send_keys(phone_generator())
+
+    # Input password
+    password_input = browser.find_element_by_css_selector('input#password')
+    password_input.clear()
+    password_input.send_keys(password)
+
+    # ===добавить проверку на попытку реги без галочки===
+
+    # Check agreement
+    browser.find_element_by_css_selector('input#registrationform-aggr').click()
+
+    # Click "Зарегистрироваться"
+    browser.find_element_by_css_selector('button.submit.field.button').click()
+    
+    time.sleep(1)
+    success_registration = browser.find_element_by_css_selector('.blue.center').text
+    index = success_registration.find('входа')
+    if index != -1:
+        print(f'[+] Регистрация выполнена')
+    else:
+        print(f'Что-то пошло не так')
+
+    decoration_finish()
 
 
-    def blabla():
-        pass
+def navigation():
+    pass
 
-    # test_login()
-    # test_logout()
-    # time.sleep(1)
-    # test_registartion()
 
-finally:
-    # успеваем скопировать код за 30 секунд
-    time.sleep(30)
-    # закрываем браузер после всех манипуляций
-    browser.quit()
+def blabla():
+    pass
+
+test_login()
+test_logout()
+time.sleep(1)
+test_registartion()
+
+
+# успеваем скопировать код за 10 секунд
+time.sleep(10)
+# закрываем браузер после всех манипуляций
+browser.quit()
