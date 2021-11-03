@@ -7,7 +7,7 @@ from selenium.common.exceptions import TimeoutException
 import math
 
 
-url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019"
+url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
 
 class BasePage():
     def __init__(self, browser, url, timeout=10):
